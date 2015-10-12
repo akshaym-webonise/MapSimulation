@@ -1,7 +1,6 @@
 var map;
 var polygon;
 var markerCount;
-var point
 
 document.addEventListener("DOMContentLoaded", initialize, false);
 
@@ -12,9 +11,11 @@ function initialize(){
 		addToList(event.latlng);
 	});
     markerCount=1;
+    LOG.logInfo("Mapbox initialized");
 }
 
 function createPolygon(){
+    LOG.logDebug("Creating polygon connecting the coordinates");
     if(polygon)
      	map.removeLayer(polygon);
      polygon_options = {
@@ -24,50 +25,50 @@ function createPolygon(){
 }
 
 function addToList(latlng){
-  	point = createNewPoint(latlng);
- 	point.setPointNo(markerCount);
- 	controller.addToList(point);
+    LOG.logInfo("Creating coordinate : "+markerCount);
+    var point = new Point(latlng, markerCount);
+    controller.addToList(point);
     createMarker(latlng);
     createPolygon();
 }
 
-function createNewPoint(latLng){
-    point = controller.getNewLatLng();
-    point.setLat(latLng.lat);
-    point.setLng(latLng.lng);
-    return point;
+var Point = function(latLng, pointNo){
+    this.point = controller.getNewLatLng();
+    this.point.lat = latLng.lat;
+    this.point.lng = latLng.lng;
+    this.point.pointNo = pointNo;
+    return this.point;
 }
 
 function createMarker(latlng){
+    LOG.logInfo("Creating marker: ");
     var marker = L.marker(latlng, {draggable:true, title:markerCount++});
     marker.on('dragend', function(event){
-        point = createNewPoint(marker.getLatLng());
-        point.pointNo = parseInt(marker.options.title);
+        var point = new Point(marker.getLatLng(), parseInt(marker.options.title));
         controller.updateMarker(point);
         createPolygon();
     });
 
     marker.on('click', function(event){
-        point = createNewPoint(marker.getLatLng());
-        point.pointNo = parseInt(marker.options.title);
+        var point = new Point(marker.getLatLng(), parseInt(marker.options.title));
         controller.deleteMarker(point);
         map.removeLayer(marker);
-        markerCount--;
         createPolygon();
     });
     marker.addTo(map);
 }
 
 function clearPolygon(){
+    LOG.logInfo("Removing the polygon area selection");
     map.removeLayer(polygon);
     markerCount = 1;
 }
 
 function deleteMarkers(){
-    var latLngList = controller.getLatLngList();
-
-    for(index = 0 ; index<latLngList.size() ; index++){
-        var marker = L.marker(latLngList.get(index));
-        map.removeLayer(marker)
-    }
+    LOG.logInfo("Deleting all markers ");
+    map.eachLayer(function(layer) {
+      if (layer instanceof L.Marker) {
+        map.removeLayer(layer);
+      }
+    });
 }

@@ -20,8 +20,8 @@ import java.util.ResourceBundle;
 public class MainScreenController implements Initializable {
 
     private static final Logger LOG = LoggerFactory.getLogger(MainScreenController.class);
-    private static final String SCRIPT_DELETEMARKER = "deleteMarkers()";
-    private static final String SCRIPT_CREATEMARKER = "clearPolygon()";
+    private static final String SCRIPT_DELETE_MARKERS = "deleteMarkers()";
+    private static final String SCRIPT_CLEAR_POLYGON = "clearPolygon()";
     private static final String LAT = "lat";
     private static final String LNG = "lng";
     private static final String RESOURCE_HTML = "/html/MapBox.html";
@@ -52,7 +52,7 @@ public class MainScreenController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         LOG.info("UI initialized");
         webEngine = mapBrowser.getEngine();
-        webEngine.load(getClass().getResource(RESOURCE_HTML).toExternalForm());
+        webEngine.load(Thread.currentThread().getClass().getResource(RESOURCE_HTML).toExternalForm());
         progressBar.progressProperty().bind(webEngine.getLoadWorker().progressProperty());
 
         latLngController = new LatLngController();
@@ -62,11 +62,11 @@ public class MainScreenController implements Initializable {
 
         script = (JSObject) webEngine.executeScript(WINDOW);
         script.setMember("controller", latLngController);
-        script.setMember("LOG", LOG);
+        script.setMember("LOG", new ScriptController());
 
         clearButton.setOnAction(event -> {
-            webEngine.executeScript(SCRIPT_DELETEMARKER);
-            webEngine.executeScript(SCRIPT_CREATEMARKER);
+            webEngine.executeScript(SCRIPT_DELETE_MARKERS);
+            webEngine.executeScript(SCRIPT_CLEAR_POLYGON);
             latLngController.getLatLngList().clear();
         });
     }

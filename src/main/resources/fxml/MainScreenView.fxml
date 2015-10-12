@@ -6,26 +6,22 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
-<HBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.webonise.controllers.MainScreenController" spacing="8">
-    <padding>
-        <Insets left="5.0" right="5.0" top="5.0" bottom="5.0"/>
-    </padding>
-
+<HBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.webonise.controllers.MainScreenController" >
     <children>
-        <VBox spacing="8">
+        <VBox>
             <children>
-                <TableView fx:id="tableView" minWidth="300" VBox.vgrow="ALWAYS">
+                <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn prefWidth="150" text="Latitude" fx:id="latColumn"/>
-                        <TableColumn prefWidth="150" text="Longitude" fx:id="lngColumn"/>
+                        <TableColumn text="Latitude" fx:id="latColumn"/>
+                        <TableColumn text="Longitude" fx:id="lngColumn"/>
                     </columns>
                 </TableView>
                 <Button fx:id="clearButton" text="Clear Selection" />
             </children>
         </VBox>
-        <VBox spacing="8" HBox.hgrow="ALWAYS">
+        <VBox HBox.hgrow="ALWAYS">
             <children>
-                <ProgressBar fx:id="progressBar" maxWidth="Infinity"/>
+                <ProgressBar fx:id="progressBar"/>
                 <WebView fx:id="mapBrowser" VBox.vgrow="ALWAYS"/>
             </children>
         </VBox>

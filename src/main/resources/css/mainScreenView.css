@@ -1,0 +1,21 @@
+
+HBox{
+    -fx-padding: 10px;
+    -fx-spacing: 8px;
+}
+
+VBox{
+    -fx-spacing: 8px;
+}
+
+ProgressBar{
+    -fx-max-width: infinity;
+}
+
+TableView{
+    -fx-min-width: 300px;
+}
+
+TableColumn{
+    -fx-pref-width: 150px;
+}

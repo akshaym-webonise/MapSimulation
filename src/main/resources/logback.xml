@@ -22,7 +22,6 @@
         </rollingPolicy>
     </appender>
 
-    <logger name="com.springframework" level="INFO"/>
     <logger name="com.webonise" level="DEBUG"/>
 
     <root level="WARN">

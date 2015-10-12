@@ -7,31 +7,17 @@ import javafx.collections.ObservableList;
 public class LatLngController {
 
     private ObservableList<LatLng> latLngList;
-    private LatLng latLng;
 
     public LatLngController() {
         latLngList = FXCollections.observableArrayList();
-        latLng = new LatLng();
     }
 
     public ObservableList<LatLng> getLatLngList() {
         return latLngList;
     }
 
-    public void setLatLngList(ObservableList<LatLng> latLngList) {
-        this.latLngList = latLngList;
-    }
-
-    public LatLng getLatLng() {
-        return latLng;
-    }
-
     public LatLng getNewLatLng() {
         return new LatLng();
-    }
-
-    public void setLatLng(LatLng latLng) {
-        this.latLng = latLng;
     }
 
     public void addToList(LatLng point) {
