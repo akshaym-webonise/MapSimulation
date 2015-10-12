@@ -1,61 +1,73 @@
 var map;
-var latlngs;
 var polygon;
-var markers;
 var markerCount;
+var point
 
 document.addEventListener("DOMContentLoaded", initialize, false);
 
- function initialize()
- {
-	console.log("Initializing map");
+function initialize(){
  	L.mapbox.accessToken = 'pk.eyJ1IjoiYWtzbWtyIiwiYSI6ImNpZmY3bnlncDd6eGtzdWtucjFrY3Z3OGkifQ.2QcYNghIAx0ZsZJVewp8QA';
 	map = L.mapbox.map('map', 'mapbox.streets').setView([40, -74.50], 3);
-
-    markerCount=1;
-	latlngs = new Array();
 	map.on('click', function(event){
-		//addToTable(event.latlng);
-		showPolygon(event.latlng);
+		addToList(event.latlng);
 	});
- }
+    markerCount=1;
+}
 
- function showPolygon(latlng)
- {
- 	if(polygon != undefined)
- 	map.removeLayer(polygon);
- 	polygon_options = {
- 		color:'#000'
- 	};
- 	latlngs.push(latlng);
-    createMarkers(latlng);
- 	polygon = L.polygon(latlngs, polygon_options).addTo(map);
- }
+function createPolygon(){
+    if(polygon)
+     	map.removeLayer(polygon);
+     polygon_options = {
+     		color:'#000'
+     };
+     polygon = L.polygon(controller.getLatLngList().toArray(), polygon_options).addTo(map);
+}
 
- function createMarkers(latlng){
-    var marker = L.marker(latlng, {draggable:true});
+function addToList(latlng){
+  	point = createNewPoint(latlng);
+ 	point.setPointNo(markerCount);
+ 	controller.addToList(point);
+    createMarker(latlng);
+    createPolygon();
+}
+
+function createNewPoint(latLng){
+    point = controller.getNewLatLng();
+    point.setLat(latLng.lat);
+    point.setLng(latLng.lng);
+    return point;
+}
+
+function createMarker(latlng){
+    var marker = L.marker(latlng, {draggable:true, title:markerCount++});
     marker.on('dragend', function(event){
-        console.log("Clicked "+marker.getLatLng());
-        showPolygon(marker.getLatLng());
+        point = createNewPoint(marker.getLatLng());
+        point.pointNo = parseInt(marker.options.title);
+        controller.updateMarker(point);
+        createPolygon();
     });
 
-    marker.on('dblClick', function(event){
+    marker.on('click', function(event){
+        point = createNewPoint(marker.getLatLng());
+        point.pointNo = parseInt(marker.options.title);
+        controller.deleteMarker(point);
         map.removeLayer(marker);
+        markerCount--;
+        createPolygon();
     });
-    marker.bindPopup(markerCount).openPopup();
     marker.addTo(map);
- }
-
- function addToTable(latlng){
-    console.log(latlng.lat+" "+latlng.lng);
-    coordinates.setLatitude(latlng.lat);
-    coordinates.setLongitude(latlng.lng);
-    coordinates.setDataFromJs(true);
 }
 
 function clearPolygon(){
     map.removeLayer(polygon);
-    polygon = null;
-    latlngs = new Array();
-    console.log("Map cleared");
+    markerCount = 1;
+}
+
+function deleteMarkers(){
+    var latLngList = controller.getLatLngList();
+
+    for(index = 0 ; index<latLngList.size() ; index++){
+        var marker = L.marker(latLngList.get(index));
+        map.removeLayer(marker)
+    }
 }

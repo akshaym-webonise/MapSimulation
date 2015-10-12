@@ -1,16 +1,13 @@
 package com.webonise.controllers;
 
-import com.webonise.models.Coordinates;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
+import com.webonise.models.LatLng;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.Region;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
@@ -18,58 +15,59 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.ResourceBundle;
 
-public class MainScreenController extends Region implements Initializable, Observer {
+public class MainScreenController implements Initializable {
 
     private static final Logger LOG = LoggerFactory.getLogger(MainScreenController.class);
+    private static final String SCRIPT_DELETEMARKER = "deleteMarkers()";
+    private static final String SCRIPT_CREATEMARKER = "clearPolygon()";
+    private static final String LAT = "lat";
+    private static final String LNG = "lng";
+    private static final String RESOURCE_HTML = "/html/MapBox.html";
+    private static final String WINDOW = "window";
 
-    private Coordinates coordinates;
     private WebEngine webEngine;
     private JSObject script;
-    private ObservableList<Coordinates> tableRows;
+    private LatLngController latLngController;
 
     @FXML
     private WebView mapBrowser;
+
+    @FXML
+    private Button clearButton;
+
     @FXML
     private ProgressBar progressBar;
 
     @FXML
-    private TableView<Coordinates> tableView;
+    private TableView<LatLng> tableView;
+
     @FXML
     private TableColumn latColumn;
+
     @FXML
     private TableColumn lngColumn;
 
-
     public void initialize(URL location, ResourceBundle resources) {
         LOG.info("UI initialized");
-        coordinates = new Coordinates();
         webEngine = mapBrowser.getEngine();
-        webEngine.load(getClass().getResource("/html/MapBox.html").toExternalForm());
+        webEngine.load(getClass().getResource(RESOURCE_HTML).toExternalForm());
         progressBar.progressProperty().bind(webEngine.getLoadWorker().progressProperty());
-        script = (JSObject) webEngine.executeScript("window");
-        script.setMember("coordinates", coordinates);
+
+        latLngController = new LatLngController();
+        latColumn.setCellValueFactory(new PropertyValueFactory<LatLng, Float>(LAT));
+        lngColumn.setCellValueFactory(new PropertyValueFactory<LatLng, Float>(LNG));
+        tableView.setItems(latLngController.getLatLngList());
+
+        script = (JSObject) webEngine.executeScript(WINDOW);
+        script.setMember("controller", latLngController);
         script.setMember("LOG", LOG);
-        coordinates.addObserver(this);
 
-        tableRows = FXCollections.observableArrayList();
-        latColumn.setCellValueFactory(new PropertyValueFactory<Coordinates, Float>("latitude"));
-        lngColumn.setCellValueFactory(new PropertyValueFactory<Coordinates, Float>("longitude"));
-        tableView.setItems(tableRows);
-    }
-
-    public void update(Observable object, Object arg) {
-        LOG.info("Acquired coordinates");
-        Coordinates location = (Coordinates) object;
-        tableRows.add(new Coordinates(location.getLatitude(), location.getLongitude()));
-    }
-
-    @FXML
-    public void clearTheMap(ActionEvent event) {
-        tableRows.clear();
-        webEngine.executeScript("clearPolygon()");
+        clearButton.setOnAction(event -> {
+            webEngine.executeScript(SCRIPT_DELETEMARKER);
+            webEngine.executeScript(SCRIPT_CREATEMARKER);
+            latLngController.getLatLngList().clear();
+        });
     }
 }

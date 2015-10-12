@@ -20,7 +20,7 @@
                         <TableColumn prefWidth="150" text="Longitude" fx:id="lngColumn"/>
                     </columns>
                 </TableView>
-                <Button fx:id="clearButton" text="Clear Selection" onAction="#clearTheMap"/>
+                <Button fx:id="clearButton" text="Clear Selection" />
             </children>
         </VBox>
         <VBox spacing="8" HBox.hgrow="ALWAYS">
