@@ -2,10 +2,12 @@ package com.webonise.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-public class ScriptController {
+@Component
+public class ScriptLogger {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ScriptController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScriptLogger.class);
 
     public void logInfo(String message) {
         LOG.info(message);

@@ -3,16 +3,16 @@ package com.webonise.models;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-public class LatLng {
+public class WayPoint {
     public double lat;
     public double lng;
     public int pointNo;
 
-    public LatLng() {
+    public WayPoint() {
         this(0, 0);
     }
 
-    public LatLng(double lat, double lng) {
+    public WayPoint(double lat, double lng) {
         this.lat = lat;
         this.lng = lng;
     }
@@ -42,12 +42,12 @@ public class LatLng {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public boolean equals(Object object) {
+        if (this == object) return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (object == null || getClass() != object.getClass()) return false;
 
-        LatLng latLng = (LatLng) o;
+        WayPoint latLng = (WayPoint) object;
 
         return new EqualsBuilder()
                 .append(lat, latLng.lat)
@@ -67,7 +67,7 @@ public class LatLng {
 
     @Override
     public String toString() {
-        return "LatLng{" +
+        return "WayPoint{" +
                 "lat=" + lat +
                 ", lng=" + lng +
                 ", pointNo=" + pointNo +

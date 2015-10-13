@@ -1,8 +1,8 @@
 package com.webonise.views;
 
-import com.webonise.controllers.LatLngController;
-import com.webonise.controllers.ScriptController;
-import com.webonise.models.LatLng;
+import com.webonise.controllers.WayPointController;
+import com.webonise.controllers.ScriptLogger;
+import com.webonise.models.WayPoint;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
@@ -25,8 +25,6 @@ public class MainScreenView extends AbstractScreenView {
     private static final Logger LOG = LoggerFactory.getLogger(MainScreenView.class);
     private static final String SCRIPT_DELETE_MARKERS = "deleteMarkers()";
     private static final String SCRIPT_CLEAR_POLYGON = "clearPolygon()";
-    private static final String LAT = "lat";
-    private static final String LNG = "lng";
     private static final String RESOURCE_HTML = "/html/MapBox.html";
     private static final String WINDOW = "window";
     private static final String CONTROLLER = "controller";
@@ -36,7 +34,10 @@ public class MainScreenView extends AbstractScreenView {
     private JSObject script;
 
     @Autowired
-    private LatLngController latLngController;
+    private WayPointController latLngController;
+
+    @Autowired
+    private ScriptLogger scriptLogger;
 
     @FXML
     private WebView mapBrowser;
@@ -48,7 +49,7 @@ public class MainScreenView extends AbstractScreenView {
     private ProgressBar progressBar;
 
     @FXML
-    private TableView<LatLng> tableView;
+    private TableView<WayPoint> tableView;
 
     @FXML
     private TableColumn latColumn;
@@ -62,23 +63,37 @@ public class MainScreenView extends AbstractScreenView {
 
     @PostConstruct
     public void init() {
-        LOG.debug("Initializing UI");
+        loadWebEngine();
+        bindTableView();
+        bindScriptMembers();
+        bindButtonActions();
+    }
+
+    private void loadWebEngine() {
+        LOG.debug("Initializing webEngine");
         webEngine = mapBrowser.getEngine();
         webEngine.load(Thread.currentThread().getClass().getResource(RESOURCE_HTML).toExternalForm());
         progressBar.progressProperty().bind(webEngine.getLoadWorker().progressProperty());
+    }
 
-        latColumn.setCellValueFactory(new PropertyValueFactory<LatLng, Float>(LAT));
-        lngColumn.setCellValueFactory(new PropertyValueFactory<LatLng, Float>(LNG));
-        tableView.setItems(latLngController.getLatLngList());
-
-        script = (JSObject) webEngine.executeScript(WINDOW);
-        script.setMember(CONTROLLER, latLngController);
-        script.setMember(LOGGER, new ScriptController());
-
+    private void bindButtonActions() {
+        LOG.debug("Binding button actions");
         clearButton.setOnAction(event -> {
             webEngine.executeScript(SCRIPT_DELETE_MARKERS);
             webEngine.executeScript(SCRIPT_CLEAR_POLYGON);
-            latLngController.getLatLngList().clear();
+            latLngController.getWayPointList().clear();
         });
+    }
+
+    private void bindScriptMembers() {
+        script = (JSObject) webEngine.executeScript(WINDOW);
+        script.setMember(CONTROLLER, latLngController);
+        script.setMember(LOGGER, scriptLogger);
+    }
+
+    private void bindTableView() {
+        latColumn.setCellValueFactory(new PropertyValueFactory<WayPoint, Double>("lat"));
+        lngColumn.setCellValueFactory(new PropertyValueFactory<WayPoint, Double>("lng"));
+        tableView.setItems(latLngController.getWayPointList());
     }
 }

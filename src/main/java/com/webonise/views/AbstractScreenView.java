@@ -23,8 +23,8 @@ public class AbstractScreenView extends HBox {
             fxmlLoader.setController(this);
             fxmlLoader.load();
             LOG.debug("FXML loaded");
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
+        } catch (IOException exception) {
+            LOG.error(exception.getMessage());
         }
     }
 }

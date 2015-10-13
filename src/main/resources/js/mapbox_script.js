@@ -14,16 +14,6 @@ function initialize(){
     LOG.logInfo("Mapbox initialized");
 }
 
-function createPolygon(){
-    LOG.logDebug("Creating polygon connecting the coordinates");
-    if(polygon)
-     	map.removeLayer(polygon);
-     polygon_options = {
-     		color:'#000'
-     };
-     polygon = L.polygon(controller.getLatLngList().toArray(), polygon_options).addTo(map);
-}
-
 function addToList(latlng){
     LOG.logInfo("Creating coordinate : "+markerCount);
     var point = new Point(latlng, markerCount);
@@ -33,7 +23,7 @@ function addToList(latlng){
 }
 
 var Point = function(latLng, pointNo){
-    this.point = controller.getNewLatLng();
+    this.point = controller.getNewWayPoint();
     this.point.lat = latLng.lat;
     this.point.lng = latLng.lng;
     this.point.pointNo = pointNo;
@@ -41,7 +31,7 @@ var Point = function(latLng, pointNo){
 }
 
 function createMarker(latlng){
-    LOG.logInfo("Creating marker: ");
+    LOG.logInfo("Creating marker ");
     var marker = L.marker(latlng, {draggable:true, title:markerCount++});
     marker.on('dragend', function(event){
         var point = new Point(marker.getLatLng(), parseInt(marker.options.title));
@@ -56,6 +46,16 @@ function createMarker(latlng){
         createPolygon();
     });
     marker.addTo(map);
+}
+
+function createPolygon(){
+    LOG.logDebug("Creating polygon connecting the coordinates");
+    if(polygon)
+     	map.removeLayer(polygon);
+     polygon_options = {
+     		color:'#000'
+     };
+     polygon = L.polygon(controller.getWayPointList().toArray(), polygon_options).addTo(map);
 }
 
 function clearPolygon(){
