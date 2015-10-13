@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
-<HBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.webonise.controllers.MainScreenController" >
+<fx:root type="javafx.scene.layout.HBox" xmlns:fx="http://javafx.com/fxml">
     <children>
         <VBox>
             <children>
@@ -26,4 +26,4 @@
             </children>
         </VBox>
     </children>
-</HBox>
+</fx:root>

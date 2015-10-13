@@ -9,10 +9,16 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <version.spring>4.1.0.RELEASE</version.spring>
         <version.slf4j>1.7.5</version.slf4j>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${version.spring}</version>
+        </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>

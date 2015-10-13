@@ -42,26 +42,35 @@ public class LatLng {
     }
 
     @Override
-    public int hashCode() {
-        return (new HashCodeBuilder()).append(this.lat).append(this.lng).append(this.pointNo).hashCode();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LatLng latLng = (LatLng) o;
+
+        return new EqualsBuilder()
+                .append(lat, latLng.lat)
+                .append(lng, latLng.lng)
+                .append(pointNo, latLng.pointNo)
+                .isEquals();
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        } else if (obj == this) {
-            return true;
-        } else if (obj.getClass() != this.getClass()) {
-            return false;
-        } else {
-            LatLng latLng = (LatLng) obj;
-            return (new EqualsBuilder()).append(this.lat, latLng.lat).append(this.lng, latLng.lng).append(this.pointNo, latLng.pointNo).isEquals();
-        }
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(lat)
+                .append(lng)
+                .append(pointNo)
+                .toHashCode();
     }
 
     @Override
     public String toString() {
-        return this.lat + " " + this.lng + " " + this.pointNo;
+        return "LatLng{" +
+                "lat=" + lat +
+                ", lng=" + lng +
+                ", pointNo=" + pointNo +
+                '}';
     }
 }

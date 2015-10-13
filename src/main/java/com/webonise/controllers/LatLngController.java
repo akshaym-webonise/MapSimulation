@@ -3,7 +3,9 @@ package com.webonise.controllers;
 import com.webonise.models.LatLng;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LatLngController {
 
     private ObservableList<LatLng> latLngList;
