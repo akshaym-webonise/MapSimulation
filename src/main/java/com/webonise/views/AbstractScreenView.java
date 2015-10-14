@@ -11,14 +11,19 @@ public class AbstractScreenView extends HBox {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractScreenView.class);
 
-    private static final String MAIN_SCREEN_FXML = "/fxml/MainScreenView.fxml";
+    private static final String FXML_DIRECTORY = "/fxml";
+    private static final String FXML_FILE_FORMAT = "%s/%s.fxml";
 
     private FXMLLoader fxmlLoader;
 
     public AbstractScreenView() {
+    }
+
+    public AbstractScreenView(Class clazz) {
         super();
         try {
-            fxmlLoader = new FXMLLoader(Thread.currentThread().getClass().getResource(MAIN_SCREEN_FXML));
+            String fxmlFilePath = String.format(FXML_FILE_FORMAT, FXML_DIRECTORY, clazz.getSimpleName());
+            fxmlLoader = new FXMLLoader(Thread.currentThread().getClass().getResource(fxmlFilePath));
             fxmlLoader.setRoot(this);
             fxmlLoader.setController(this);
             fxmlLoader.load();

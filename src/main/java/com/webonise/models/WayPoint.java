@@ -9,12 +9,13 @@ public class Waypoint {
     public int pointNo;
 
     public Waypoint() {
-        this(0, 0);
+        this(0, 0, 0);
     }
 
-    public Waypoint(double lat, double lng) {
+    public Waypoint(double lat, double lng, int pointNo) {
         this.lat = lat;
         this.lng = lng;
+        this.pointNo = pointNo;
     }
 
     public double getLat() {

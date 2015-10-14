@@ -10,7 +10,7 @@ function initialize(){
 	map.on('click', function(event){
 		addToList(event.latlng);
 	});
-    markerCount=1;
+    markerCount = 1;
     LOG.logInfo("Mapbox initialized");
 }
 
@@ -50,8 +50,9 @@ function createMarker(latlng){
 
 function createPolygon(){
     LOG.logDebug("Creating polygon connecting the coordinates");
-    if(polygon)
+    if(polygon){
      	map.removeLayer(polygon);
+     }
      polygon_options = {
      		color:'#000'
      };

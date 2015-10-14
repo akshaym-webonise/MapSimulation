@@ -26,7 +26,7 @@ public class WaypointController {
         waypointList.add(point);
     }
 
-    public void clearWaypointList(){
+    public void clearWaypointList() {
         waypointList.clear();
     }
 

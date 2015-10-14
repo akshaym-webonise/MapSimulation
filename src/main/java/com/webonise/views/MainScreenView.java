@@ -4,7 +4,7 @@ import com.webonise.controllers.ScriptLogger;
 import com.webonise.controllers.WaypointController;
 import com.webonise.models.Waypoint;
 import com.webonise.models.status.WebEngineStatus;
-import javafx.concurrent.Worker;
+import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
@@ -62,7 +62,7 @@ public class MainScreenView extends AbstractScreenView {
     private TableColumn lngColumn;
 
     public MainScreenView() {
-        super();
+        super(MainScreenView.class);
     }
 
     @PostConstruct
@@ -77,7 +77,7 @@ public class MainScreenView extends AbstractScreenView {
         LOG.debug("Initializing webEngine");
         webEngine = mapBrowser.getEngine();
         webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == Worker.State.SUCCEEDED) {
+            if (newValue == State.SUCCEEDED) {
                 webEngineStatus = WebEngineStatus.ACTIVE;
                 LOG.debug("WebEngine is " + String.valueOf(webEngineStatus));
             } else {
