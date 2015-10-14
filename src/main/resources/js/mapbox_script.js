@@ -5,7 +5,7 @@ var markerCount;
 document.addEventListener("DOMContentLoaded", initialize, false);
 
 function initialize(){
- 	L.mapbox.accessToken = 'pk.eyJ1IjoiYWtzbWtyIiwiYSI6ImNpZmY3bnlncDd6eGtzdWtucjFrY3Z3OGkifQ.2QcYNghIAx0ZsZJVewp8QA';
+    L.mapbox.accessToken = 'pk.eyJ1IjoiYWtzbWtyIiwiYSI6ImNpZmY3bnlncDd6eGtzdWtucjFrY3Z3OGkifQ.2QcYNghIAx0ZsZJVewp8QA';
 	map = L.mapbox.map('map', 'mapbox.streets').setView([40, -74.50], 3);
 	map.on('click', function(event){
 		addToList(event.latlng);
@@ -23,7 +23,7 @@ function addToList(latlng){
 }
 
 var Point = function(latLng, pointNo){
-    this.point = controller.getNewWayPoint();
+    this.point = controller.getNewWaypoint();
     this.point.lat = latLng.lat;
     this.point.lng = latLng.lng;
     this.point.pointNo = pointNo;
@@ -55,7 +55,7 @@ function createPolygon(){
      polygon_options = {
      		color:'#000'
      };
-     polygon = L.polygon(controller.getWayPointList().toArray(), polygon_options).addTo(map);
+     polygon = L.polygon(controller.getWaypointList().toArray(), polygon_options).addTo(map);
 }
 
 function clearPolygon(){

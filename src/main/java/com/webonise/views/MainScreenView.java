@@ -1,8 +1,10 @@
 package com.webonise.views;
 
-import com.webonise.controllers.WayPointController;
 import com.webonise.controllers.ScriptLogger;
-import com.webonise.models.WayPoint;
+import com.webonise.controllers.WaypointController;
+import com.webonise.models.Waypoint;
+import com.webonise.models.status.WebEngineStatus;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
@@ -29,12 +31,14 @@ public class MainScreenView extends AbstractScreenView {
     private static final String WINDOW = "window";
     private static final String CONTROLLER = "controller";
     private static final String LOGGER = "LOG";
+    private static final String WEB_ENGINE_STATUS = "webEngineStatus";
 
     private WebEngine webEngine;
     private JSObject script;
+    private WebEngineStatus webEngineStatus;
 
     @Autowired
-    private WayPointController latLngController;
+    private WaypointController waypointController;
 
     @Autowired
     private ScriptLogger scriptLogger;
@@ -49,7 +53,7 @@ public class MainScreenView extends AbstractScreenView {
     private ProgressBar progressBar;
 
     @FXML
-    private TableView<WayPoint> tableView;
+    private TableView<Waypoint> tableView;
 
     @FXML
     private TableColumn latColumn;
@@ -72,28 +76,43 @@ public class MainScreenView extends AbstractScreenView {
     private void loadWebEngine() {
         LOG.debug("Initializing webEngine");
         webEngine = mapBrowser.getEngine();
-        webEngine.load(Thread.currentThread().getClass().getResource(RESOURCE_HTML).toExternalForm());
+        webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == Worker.State.SUCCEEDED) {
+                webEngineStatus = WebEngineStatus.ACTIVE;
+                LOG.debug("WebEngine is " + String.valueOf(webEngineStatus));
+            } else {
+                webEngineStatus = WebEngineStatus.INACTIVE;
+                LOG.debug("WebEngine is " + String.valueOf(webEngineStatus));
+            }
+        });
         progressBar.progressProperty().bind(webEngine.getLoadWorker().progressProperty());
+        webEngine.load(Thread.currentThread().getClass().getResource(RESOURCE_HTML)
+                .toExternalForm());
     }
 
     private void bindButtonActions() {
         LOG.debug("Binding button actions");
         clearButton.setOnAction(event -> {
-            webEngine.executeScript(SCRIPT_DELETE_MARKERS);
-            webEngine.executeScript(SCRIPT_CLEAR_POLYGON);
-            latLngController.getWayPointList().clear();
+            if (webEngineStatus == WebEngineStatus.ACTIVE) {
+                webEngine.executeScript(SCRIPT_DELETE_MARKERS);
+                webEngine.executeScript(SCRIPT_CLEAR_POLYGON);
+                waypointController.clearWaypointList();
+            } else {
+                LOG.error("Network is offline");
+            }
         });
     }
 
     private void bindScriptMembers() {
         script = (JSObject) webEngine.executeScript(WINDOW);
-        script.setMember(CONTROLLER, latLngController);
+        script.setMember(CONTROLLER, waypointController);
+        script.setMember(WEB_ENGINE_STATUS, webEngineStatus);
         script.setMember(LOGGER, scriptLogger);
     }
 
     private void bindTableView() {
-        latColumn.setCellValueFactory(new PropertyValueFactory<WayPoint, Double>("lat"));
-        lngColumn.setCellValueFactory(new PropertyValueFactory<WayPoint, Double>("lng"));
-        tableView.setItems(latLngController.getWayPointList());
+        latColumn.setCellValueFactory(new PropertyValueFactory<Waypoint, Double>("lat"));
+        lngColumn.setCellValueFactory(new PropertyValueFactory<Waypoint, Double>("lng"));
+        tableView.setItems(waypointController.getWaypointList());
     }
 }

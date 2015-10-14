@@ -1,48 +1,52 @@
 package com.webonise.controllers;
 
-import com.webonise.models.WayPoint;
+import com.webonise.models.Waypoint;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WayPointController {
+public class WaypointController {
 
-    private final ObservableList<WayPoint> wayPointList;
+    private final ObservableList<Waypoint> waypointList;
 
-    public WayPointController() {
-        wayPointList = FXCollections.observableArrayList();
+    public WaypointController() {
+        waypointList = FXCollections.observableArrayList();
     }
 
-    public ObservableList<WayPoint> getWayPointList() {
-        return FXCollections.unmodifiableObservableList(wayPointList);
+    public ObservableList<Waypoint> getWaypointList() {
+        return FXCollections.unmodifiableObservableList(waypointList);
     }
 
-    public WayPoint getNewWayPoint() {
-        return new WayPoint();
+    public Waypoint getNewWaypoint() {
+        return new Waypoint();
     }
 
-    public void addToList(WayPoint point) {
-        wayPointList.add(point);
+    public void addToList(Waypoint point) {
+        waypointList.add(point);
     }
 
-    public void updateMarker(WayPoint point) {
-        int listSize = wayPointList.size();
+    public void clearWaypointList(){
+        waypointList.clear();
+    }
+
+    public void updateMarker(Waypoint point) {
+        int listSize = waypointList.size();
         for (int index = 0; index < listSize; index++) {
-            WayPoint current = wayPointList.get(index);
+            Waypoint current = waypointList.get(index);
             if (current.getPointNo() == point.getPointNo()) {
-                wayPointList.set(index, point);
+                waypointList.set(index, point);
                 break;
             }
         }
     }
 
-    public void deleteMarker(WayPoint point) {
-        int listSize = wayPointList.size();
+    public void deleteMarker(Waypoint point) {
+        int listSize = waypointList.size();
         for (int index = 0; index < listSize; index++) {
-            WayPoint current = wayPointList.get(index);
+            Waypoint current = waypointList.get(index);
             if (current.getPointNo() == point.getPointNo()) {
-                wayPointList.remove(index);
+                waypointList.remove(index);
                 break;
             }
         }
