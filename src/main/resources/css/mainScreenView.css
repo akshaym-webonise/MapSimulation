@@ -1,0 +1,22 @@
+
+.root{
+    -fx-padding: 10px;
+    -fx-spacing: 8px;
+}
+
+.container{
+    -fx-spacing: 8px;
+}
+
+.mapProgressBar{
+    -fx-max-width: infinity;
+    -fx-pref-height: 25px;
+}
+
+.wayPointTable{
+    -fx-min-width: 300px;
+}
+
+.wayPointColumn{
+    -fx-pref-width: 150px;
+}

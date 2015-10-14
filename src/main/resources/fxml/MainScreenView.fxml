@@ -1,0 +1,25 @@
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.web.WebView?>
+<fx:root type="javafx.scene.layout.HBox" xmlns:fx="http://javafx.com/fxml"
+         stylesheets="/css/mainScreenView.css"
+         styleClass="root">
+
+    <VBox styleClass="container">
+        <TableView fx:id="tableView" VBox.vgrow="ALWAYS" styleClass="wayPointTable">
+            <columns>
+                <TableColumn text="Latitude" fx:id="latColumn" styleClass="wayPointColumn"/>
+                <TableColumn text="Longitude" fx:id="lngColumn" styleClass="wayPointColumn"/>
+            </columns>
+        </TableView>
+        <Button fx:id="clearButton" text="Clear Selection"/>
+    </VBox>
+    <VBox HBox.hgrow="ALWAYS" styleClass="container">
+        <ProgressBar fx:id="progressBar" styleClass="mapProgressBar"/>
+        <WebView fx:id="mapBrowser" VBox.vgrow="ALWAYS"/>
+    </VBox>
+</fx:root>
